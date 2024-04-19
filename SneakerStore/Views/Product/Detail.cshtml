@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Product Detail";
+}
+@model ProductDetailViewModel
+<!-- Open Content -->
+<section>
+    <div class="container pb-5 pt-5">
+        @if (ViewBag.AddCartSuccess != null)
+        {
+            <div class="alert alert-success mb-0" role="alert">
+                @ViewBag.AddCartSuccess
+            </div>
+        }
+
+        <div class="row">
+            <!-- col end -->
+            <div class="col-lg-7 mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <a asp-action="Index" asp-controller="Product" class="text-dark mr-2" data-mdb-toggle="tooltip" title="Back to Products"><i class="fa fa-fw fa-chevron-left"></i></a>
+                            <h2 class="mb-0">@Model.Product.Name</h2>
+                        </div>
+                        <p class="h3 py-2">$@Model.Product.Price</p>
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <h6>Brand:</h6>
+                            </li>
+                            <li class="list-inline-item">
+                                <p class="text-muted"><strong>@Model.Product.Brand.Name</strong></p>
+                            </li>
+                        </ul>
+
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <h6>Category:</h6>
+                            </li>
+                            <li class="list-inline-item">
+                                <p class="text-muted"><strong>@Model.Product.Category.Name</strong></p>
+                            </li>
+                        </ul>
+
+                        <h6>Description:</h6>
+                        <p>@Model.Product.Description</p>
+
+                        <form id="add-to-cart-form" asp-action="Add" asp-controller="Cart" asp-route-id="@Model.ProductID" method="post">
+                            <input type="hidden" asp-for="ProductID" value="@Model.ProductID">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <p>Size</p>
+                                    <input type="hidden" asp-for="SizeID" id="product-size" value="">
+                                    <ul class="list-inline">
+                                        @foreach (var item in Model.Product.ProductSizes)
+                                        {
+                                            <li class="list-inline-item mt-2"><span style="width:8em;" class="btn btn-secondary btn-size" data-id="@item.SizeId">@item.Size.Name</span></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid">
+                                    <ul class="list-inline pb-3">
+                                        <li class="list-inline-item text-right">
+                                            Quantity
+                                            <input type="hidden" asp-for="Quantity" id="product-quanity" value="1">
+                                        </li>
+                                        <li class="list-inline-item"><span class="btn btn-secondary" id="btn-minus">-</span></li>
+                                        <li class="list-inline-item"><span class="btn btn-outline-secondary" style="cursor: default;" id="var-value">1</span></li>
+                                        <li class="list-inline-item"><span class="btn btn-secondary" id="btn-plus">+</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p style="display: none" class="text-danger text-center" id="size-warning">Select a size to add to cart</p>
+
+                            <div class="row pb-3">
+                                <div class="col d-grid">
+                                    <button type="button" id="add-to-cart-btn" onclick="submitBtnClick()" class="btn btn-success btn-lg">Add To Cart</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5">
+                <div class="card mb-3">
+                    <img class="card-img img-fluid" src="@Model.Product.Image" alt="Card image cap" id="product-detail">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Close Content -->
+<!-- Start Article -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-left p-2 pb-3">
+            <h4>Related Products</h4>
+        </div>
+
+        <div class="row">
+            @foreach (var item in Model.RelatedProducts)
+            {
+                <div class="col-md-3">
+                    <div class="">
+                        <div class="product-wap card rounded-0">
+                            <div class="card rounded-0" style="height: 18em;">
+                                    <img class="card-img rounded-0 img-fluid h-100" src="@item.Image">
+
+                                    <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                        <ul class="list-unstyled">
+                                            <li><a class="btn btn-success text-white mt-2" asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            <div class="card-body">
+                                <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="h3 text-decoration-none"
+                               style="height:2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">@item.Name</a>
+                                <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
+                                    <li>@item.Brand.Name</li>
+                                </ul>
+                                <p class="text-center mb-0">$@item.Price</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function submitBtnClick() {
+            if (document.getElementById("product-size").value == "") {
+                document.getElementById("size-warning").style.display = "block";
+            } else {
+                document.getElementById("add-to-cart-form").submit();
+            }
+        }
+    </script>
+}

@@ -1,0 +1,240 @@
+﻿@using Microsoft.AspNetCore.Http;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sneaky Sneaker Store</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="apple-touch-icon" href="~/icon/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="~/icon/favicon.ico">
+
+    <link rel="stylesheet" href="~/css/templatemo.css">
+    <link rel="stylesheet" href="~/css/custom.css">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="~/css/fontawesome.min.css">
+
+    <!-- Slick -->
+    <link rel="stylesheet" type="text/css" href="~/css/slick.min.css">
+    <link rel="stylesheet" type="text/css" href="~/css/slick-theme.css">
+
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css"
+          rel="stylesheet" />
+</head>
+<body>
+    <!-- Start Top Nav -->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
+        <div class="container text-light">
+            <div class="w-100 d-flex justify-content-between">
+                <div>
+                    <i class="fa fa-envelope mx-2"></i>
+                    <a class="navbar-sm-brand text-light text-decoration-none" href="mailto:sneakysneaker@gmail.com">sneakysneaker@gmail.com</a>
+                    <i class="fa fa-phone mx-2"></i>
+                    <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">010-020-0340</a>
+                </div>
+                <div>
+                    @if (User.Identity.Name != null)
+                    {
+                        <span class="text-light">Hello, @User.Identity.Name</span>
+                        <span class="text-light">|</span>
+                        <a class="text-light" asp-controller="Home" asp-action="Logout" asp-route-returnurl="@(Context.Request.Path)">Logout</a>
+                    }
+                    else
+                    {
+                        <a class="text-light" asp-controller="Home" asp-action="Login">Login</a>
+                        <span class="text-light">|</span>
+                        <a class="text-light" asp-controller="Home" asp-action="Register">Register</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Close Top Nav -->
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-success logo h1 align-self-center" asp-controller="Home" asp-action="Index">
+                Sneaky
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index" style="font-size: 1.2em !important;">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Product" asp-action="Index" style="font-size: 1.2em !important;">Products</a>
+                        </li>
+                        @if (User.Identity.Name != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Order" asp-action="Index" style="font-size: 1.2em !important;">My Orders</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="About" style="font-size: 1.2em !important;">About</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="align-self-center d-flex">
+                    @if (User.Identity.Name != null)
+                    {
+                        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                        <a class="nav-icon position-relative text-decoration-none ml-4" asp-controller="Cart" asp-action="Index">
+                            <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
+                            @{
+                                var cartCount = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+                                if (cartCount != null && !cartCount.Value.Equals("0"))
+                                {
+                                    <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-danger text-white font-weight-light">@cartCount.Value</span>
+                                }
+                            }
+                        </a>
+                        <div class="dropstart">
+                            <a class="nav-icon text-decoration-none ml-4" id="userInfoButton" href="#" role="button"
+                           data-mdb-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-fw fa-user text-dark mr-3"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userInfoButton">
+                                <li class="px-3 pt-2">
+                                    <p class="mb-1 text-nowrap"> <i class="fa fa-fw fa-user-tie text-dark mr-2"></i>@User.Identity.Name</p>
+                                    @{
+                                        var email = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Email);
+                                        if (!string.IsNullOrEmpty(email.Value))
+                                        {
+                                            <p class="text-nowrap"><i class="fa fa-fw fa-envelope text-dark mr-2"></i>@email.Value</p>
+                                        }
+                                    }
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="UpdateInformation" asp-controller="Home">Update account information</a></li>
+                                <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Home">Change password</a></li>
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Close Header -->
+
+
+    <div>
+        <main role="main" style="background-color: #f0f2f5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Start Footer -->
+    <footer class="bg-dark" id="tempaltemo_footer">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-6 pt-5">
+                    <h2 class="h2 text-success border-bottom pb-3 border-light logo">Sneaky Sneaker Store</h2>
+                    <ul class="list-unstyled text-light footer-link-list">
+                        <li>
+                            <i class="fas fa-map-marker-alt fa-fw"></i>
+                            Thu Duc city, Ho Chi Minh city, Vietnam
+                        </li>
+                        <li>
+                            <i class="fa fa-phone fa-fw"></i>
+                            <a class="text-decoration-none" href="tel:010-020-0340">010-020-0340</a>
+                        </li>
+                        <li>
+                            <i class="fa fa-envelope fa-fw"></i>
+                            <a class="text-decoration-none" href="mailto:sneakysneaker@gmail.com">sneakysneaker@gmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+
+                @*<div class="col-md-4 pt-5">
+                    <h2 class="h2 text-light border-bottom pb-3 border-light">Products</h2>
+                    <ul class="list-unstyled text-light footer-link-list">
+                        <li><a class="text-decoration-none" href="#">Luxury</a></li>
+                        <li><a class="text-decoration-none" href="#">Sport Wear</a></li>
+                        <li><a class="text-decoration-none" href="#">Men's Shoes</a></li>
+                        <li><a class="text-decoration-none" href="#">Women's Shoes</a></li>
+                        <li><a class="text-decoration-none" href="#">Popular Dress</a></li>
+                        <li><a class="text-decoration-none" href="#">Gym Accessories</a></li>
+                        <li><a class="text-decoration-none" href="#">Sport Shoes</a></li>
+                    </ul>
+                    </div>*@
+
+                <div class="col-md-6 pt-5">
+                    <h2 class="h2 text-light border-bottom pb-3 border-light">Further Info</h2>
+                    <ul class="list-unstyled text-light footer-link-list">
+                        <li><a class="text-decoration-none" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a class="text-decoration-none" asp-controller="Home" asp-action="About">About Us</a></li>
+                        <li><a class="text-decoration-none" asp-controller="Product" asp-action="Index">Products</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="row text-light mb-4">
+                <div class="col-12 mb-3">
+                    <div class="w-100 my-3 border-top border-light"></div>
+                </div>
+                <div class="col-auto me-auto">
+                    <ul class="list-inline text-left footer-icons">
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://www.instagram.com/"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://twitter.com/"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="https://www.linkedin.com/"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-auto">
+                    <label class="sr-only" for="subscribeEmail">Email address</label>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
+                        <div class="input-group-text btn-success text-light">Subscribe</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-100 bg-black py-3">
+            @*<div class="container">
+                <div class="row pt-2">
+                    <div class="col-12">
+                        <p class="text-left text-light">
+                            Copyright &copy; 2021 Company Name
+                            | Designed by <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                        </p>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </footer>
+    <!-- End Footer -->
+    <!-- Start Script -->
+    <script src="~/js/jquery-1.11.0.min.js"></script>
+    <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/templatemo.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- MDB -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
+    <!-- End Script -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

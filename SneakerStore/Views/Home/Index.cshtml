@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model IQueryable<Repository.Models.Product>
+<!-- Start Banner Hero -->
+<div id="template-mo-zay-hero-carousel" class="carousel slide" data-bs-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="0" class="active"></li>
+        <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="1"></li>
+        <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="container">
+                <div class="row p-5">
+                    <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                        <img class="img-fluid" src="~/img/banner_img_01.jpg" alt="">
+                    </div>
+                    <div class="col-lg-6 mb-0 d-flex align-items-center">
+                        <div class="text-align-left align-self-center">
+                            <h1 class="h1 text-success"><b>Sneaky</b> Sneaker Store</h1>
+                            <h3 class="h2">Step up your sneaker game</h3>
+                            <p>
+                                Whether you're looking for the latest trends or classic styles, we have everything you need to step up your sneaker game. Shop with us today and experience the Sneaky difference!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="container">
+                <div class="row p-5">
+                    <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                        <img class="img-fluid" src="~/img/banner_img_02.jpg" alt="">
+                    </div>
+                    <div class="col-lg-6 mb-0 d-flex align-items-center">
+                        <div class="text-align-left">
+                            <h1 class="h1">Fast Shipping & Easy Returns</h1>
+                            <h3 class="h2">Get your kicks quickly and hassle-free</h3>
+                            <p>
+                                Enjoy fast and reliable shipping, as well as easy returns and exchanges, when you shop with Sneaky. Shop with us today and experience the Sneaky difference!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="container">
+                <div class="row p-5">
+                    <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                        <img class="img-fluid" src="~/img/banner_img_03.jpg" alt="">
+                    </div>
+                    <div class="col-lg-6 mb-0 d-flex align-items-center">
+                        <div class="text-align-left">
+                            <h1 class="h1">Sneaker Collections</h1>
+                            <h3 class="h2">Find your perfect pair</h3>
+                            <p>
+                                Discover our vast collection of sneakers, curated with the latest and greatest styles from the most sought-after brands. From classic styles to limited editions, we have something for every sneakerhead.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev text-decoration-none w-auto ps-3" href="#template-mo-zay-hero-carousel" role="button" data-bs-slide="prev">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+    <a class="carousel-control-next text-decoration-none w-auto pe-3" href="#template-mo-zay-hero-carousel" role="button" data-bs-slide="next">
+        <i class="fas fa-chevron-right"></i>
+    </a>
+</div>
+<!-- End Banner Hero -->
+<!-- Start Categories of The Month -->
+<section class="container py-5">
+    <div class="row text-center pt-3">
+        <div class="col-lg-6 m-auto">
+            <h1 class="h1">Categories of The Month</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-4 p-5 mt-3">
+            <a href="#"><img src="https://images.unsplash.com/photo-1575456456278-936c89ccdb7b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="img-thumbnail img-fluid border"></a>
+            <h5 class="text-center mt-3 mb-3">Running</h5>
+            <p class="text-center"><a class="btn btn-success" asp-action="Index" asp-controller="Product" asp-route-category="1">Go Shop</a></p>
+        </div>
+        <div class="col-12 col-md-4 p-5 mt-3">
+            <a href="#"><img src="https://images.unsplash.com/photo-1528701800487-ba01fea498c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="img-thumbnail img-fluid border"></a>
+            <h2 class="h5 text-center mt-3 mb-3">Lifestyle</h2>
+            <p class="text-center"><a class="btn btn-success" asp-action="Index" asp-controller="Product" asp-route-category="4">Go Shop</a></p>
+        </div>
+        <div class="col-12 col-md-4 p-5 mt-3">
+            <a href="#"><img src="https://images.unsplash.com/photo-1555378322-a8e1515568e4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="img-thumbnail img-fluid border"></a>
+            <h2 class="h5 text-center mt-3 mb-3">Basketball</h2>
+            <p class="text-center"><a class="btn btn-success" asp-action="Index" asp-controller="Product" asp-route-category="2">Go Shop</a></p>
+        </div>
+    </div>
+</section>
+<!-- End Categories of The Month -->
+<!-- Start Featured Product -->
+<section class="bg-light">
+    <div class="container py-5">
+        <div class="row text-center py-3">
+            <div class="col-lg-6 m-auto">
+                <h1 class="h1">Featured Product</h1>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-12 col-md-4 mb-4">
+                    <div class="card h-100">
+                        <a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id" style="height: 20em;">
+                            <img src="@item.Image" class="card-img-top img-fluid h-100" alt="product-image">
+                        </a>
+                        <div class="card-body">
+                            <ul class="list-unstyled d-flex justify-content-between">
+                                <li class="text-muted text-right">$@item.Price</li>
+                            </ul>
+                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id" class="h2 text-decoration-none text-dark">@item.Name</a>
+                            <p class="card-text mt-2" style="display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;">
+                                @item.Description
+                            </p>
+                            <p class="text-muted">@item.Brand.Name</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+<!-- End Featured Product -->

@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "Cart";
+}
+@model CartViewModel
+
+<section class="h-100">
+    <div class="container py-5">
+        <div class="row d-flex justify-content-center my-4">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Cart - @Model.TotalItems items</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.CartItems.Count() == 0)
+                        {
+                            <div class="d-flex align-items-center" style="height: 12.4em;">
+                                <h5 class="text-center m-auto">Your cart is empty</h5>
+                            </div>
+                        }
+                        else
+                        {
+                            var last = Model.CartItems.Last();
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <!-- Single item -->
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                        <!-- Image -->
+                                        <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                                            <img src="@item.Product.Image"
+                                         class="w-100" alt="Product image" />
+                                            <a href="#!">
+                                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                            </a>
+                                        </div>
+                                        <!-- Image -->
+                                    </div>
+
+                                    <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                        <!-- Data -->
+                                        <p><strong>@item.Product.Name</strong></p>
+                                        <p>Brand: @item.Product.Brand.Name</p>
+                                        <p>Size: @item.Size.Name</p>
+                                        <p>Price: $@item.Product.Price.ToString("#,##0.00")</p>
+                                        <div data-mdb-toggle="modal" data-mdb-target="#deleteModal" data-productid="@item.ProductId" data-sizeid="@item.SizeId" onclick="deleteButtonClick(this)">
+                                            <button type="button" class="btn btn-danger btn-sm me-1 mb-2"
+                                            title="Remove item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <!-- Data -->
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                        <!-- Quantity -->
+                                        <form id="@($"form-p{item.ProductId}-s{item.SizeId}")" asp-action="Change" asp-controller="Cart" method="Get">
+                                            <div class="d-flex mb-4" style="max-width: 300px">
+                                                <button type="button" class="btn btn-success px-3 me-2" data-productid="@item.ProductId" data-sizeid="@item.SizeId"
+                                                onclick="quantityDown(this)">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+
+                                                <div class="form-outline">
+                                                    <input id="@($"form-quantity-p{item.ProductId}-s{item.SizeId}")" min="1" name="newQuantity" value="@item.Quantity" type="number" class="form-control" />
+                                                    <label class="form-label" for="@($"form-quantity-p{item.ProductId}-s{item.SizeId}")">Quantity</label>
+                                                </div>
+
+                                                <input type="hidden" id="@($"product-id-p{item.ProductId}-s{item.SizeId}")" name="productId" value="" />
+                                                <input type="hidden" id="@($"size-id-p{item.ProductId}-s{item.SizeId}")" name="sizeId" value="" />
+
+                                                <button type="button" class="btn btn-success px-3 ms-2" data-productid="@item.ProductId" data-sizeid="@item.SizeId"
+                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp();changeQuantityButtonClick(this);">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <!-- Quantity -->
+                                        <!-- Price -->
+                                        <p class="text-start text-md-center">
+                                            @{
+                                                decimal totalPrice = (item.Quantity * item.Product.Price).Value;
+                                            }
+                                            <strong>Total: $@totalPrice.ToString("#,##0.00")</strong>
+                                        </p>
+                                        <!-- Price -->
+                                    </div>
+                                </div>
+                                <!-- Single item -->
+                                if (!item.Equals(last))
+                                {
+                                    <hr class="my-4" />
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                Products
+                                <span>$@Model.TotalPrice.ToString("#,##0.00")</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Shipping
+                                <span>Free of Charge</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                <div>
+                                    <strong>Total amount</strong>
+                                    <strong>
+                                        <p class="mb-0">(including VAT)</p>
+                                    </strong>
+                                </div>
+                                <span><strong>$@Model.TotalPrice.ToString("#,##0.00")</strong></span>
+                            </li>
+                        </ul>
+
+                        <a class="btn btn-success btn-lg btn-block @(@Model.CartItems.Count() == 0 ? "disabled" : "")" style="@(@Model.CartItems.Count() == 0 ? "pointer-events: none;" : "")" asp-action="Checkout" asp-controller="Cart">
+                            Go to checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                Do you want to remove this item from cart?
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Remove" asp-controller="Cart" method="Get">
+                    <input type="hidden" id="product-id-field" name="productId" value="" />
+                    <input type="hidden" id="size-id-field" name="sizeId" value="" />
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteButtonClick(e) {
+            let prodId = e.dataset.productid;
+            let sizeId = e.dataset.sizeid;
+            document.getElementById("product-id-field").value = prodId;
+            document.getElementById("size-id-field").value = sizeId
+        }
+
+        function changeQuantityButtonClick(e) {
+            let prodId = e.dataset.productid;
+            let sizeId = e.dataset.sizeid;
+            document.getElementById("product-id-p" + prodId + "-s" + sizeId).value = prodId;
+            document.getElementById("size-id-p" + prodId + "-s" + sizeId).value = sizeId
+            document.getElementById("form-p" + prodId + "-s" + sizeId).submit();
+        }
+
+        function quantityDown(e) {
+            if (e.parentNode.querySelector('input[type=number]').value > 1) {
+                e.parentNode.querySelector('input[type=number]').stepDown();
+                changeQuantityButtonClick(e);
+            }
+        }
+    </script>
+}

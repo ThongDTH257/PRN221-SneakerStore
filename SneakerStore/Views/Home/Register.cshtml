@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+@model SneakerStore.Models.RegisterViewModel
+
+<!-- Section: Design Block -->
+<section class="text-center text-lg-start">
+    <!-- Jumbotron -->
+    <div class="container py-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card" style="
+            z-index: 5;
+            margin-right: -50px;
+            background: hsla(0, 0%, 100%, 0.55);
+            backdrop-filter: blur(30px);
+            ">
+                    <div class="card-body p-5 shadow-5 text-center">
+                        <h2 class="fw-bold mb-3">Sign up now</h2>
+                        <!-- Error message -->
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <div class="d-flex justify-content-center text-danger mb-4" role="alert">
+                                @ViewBag.ErrorMessage
+                            </div>
+                        }
+                        <!-- Success message -->
+                        @if (ViewBag.SuccessMessage != null)
+                        {
+                            <div class="d-flex justify-content-center text-success mb-4" role="alert">
+                                @ViewBag.SuccessMessage
+                            </div>
+                        }
+                        <form asp-action="Register" asp-controller="Home" method="post">
+                            <!-- 2 column grid layout with text inputs for the first and last names -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <input type="text" asp-for="FullName" class="form-control" required />
+                                        <label class="form-label" asp-for="FullName">Full Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <input type="text" asp-for="Phone" class="form-control" required />
+                                        <label class="form-label" asp-for="Phone">Phone number</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Email input -->
+                            <div class="form-outline mb-4">
+                                <input type="email" asp-for="Email" class="form-control" required />
+                                <label class="form-label" asp-for="Email">Email address</label>
+                            </div>
+                            <!-- Password input -->
+                            <div class="form-outline mb-4">
+                                <input type="password" asp-for="Password" class="form-control" minlength="8" required />
+                                <label class="form-label" asp-for="Password">Password</label>
+                            </div>
+                            <!-- Confirm Password input -->
+                            <div class="form-outline mb-4">
+                                <input type="password" asp-for="ConfirmPassword" class="form-control" minlength="8" required />
+                                <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-check d-flex justify-content-center mb-4">
+                                <input class="form-check-input me-2" id="confirm-check-box" type="checkbox" onclick="check()" value=""/>
+                                <label class="form-check-label">
+                                    By checking this box, you are agreeing to our terms of service
+                                </label>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" id="submit-button" class="btn btn-primary btn-lg btn-block mb-4"
+                                    style="background-color: #59ab6e" disabled>
+                                Sign up
+                            </button>
+                            <p class="mb-5 pb-lg-2">
+                                Already have an account? <a asp-controller="Home" asp-action="Login" style="color: #59ab6e;">Login here</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <img src="~/img/register_banner.jpg" class="w-100 rounded-4 shadow-4"
+                     alt="" />
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+</section>
+<!-- Section: Design Block -->
+
+@section Scripts {
+<script>
+    function check() {
+        if (document.getElementById("confirm-check-box").checked == true) {
+            document.getElementById("submit-button").disabled = false;
+        } else {
+            document.getElementById("submit-button").disabled = true;
+        }
+    }
+</script>
+}
+

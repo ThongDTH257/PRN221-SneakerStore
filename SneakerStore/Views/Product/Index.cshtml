@@ -1,0 +1,194 @@
+﻿@{
+    ViewData["Title"] = "Products";
+}
+@model ProductListClientViewModel
+<!-- Start Content -->
+<div class="container py-5">
+    <div class="row">
+
+        <div class="col-lg-3">
+            <h1 class="h2 pb-4">All Products</h1>
+            <ul class="list-unstyled templatemo-accordion">
+                <li class="pb-3">
+                    <a class="d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Categories
+                        <i class="fa fa-fw fa-chevron-circle-up mt-1"></i>
+                    </a>
+                    @if (Model.Categories.Count() > 0)
+                    {
+                        <ul class="active list-unstyled pl-3">
+                            <li>
+                                <a class="text-decoration-none @(Model.Category == 0 ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                               asp-route-brand="@Model.Brand" asp-route-category="0" asp-route-search="@Model.Search"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">All</a>
+                            </li>
+                            @foreach (var item in Model.Categories)
+                            {
+                                <li>
+                                    <a class="text-decoration-none @(Model.Category == item.Id ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                               asp-route-brand="@Model.Brand" asp-route-category="@item.Id" asp-route-search="@Model.Search"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">@item.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+                <li class="pb-3">
+                    <a class="d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Brand
+                        <i class="pull-right fa fa-fw fa-chevron-circle-up mt-1"></i>
+                    </a>
+                    @if (Model.Brands.Count() > 0)
+                    {
+                        <ul class="active list-unstyled pl-3">
+                            <li>
+                                <a class="text-decoration-none @(Model.Brand == 0 ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                               asp-route-brand="0" asp-route-category="@Model.Category" asp-route-search="@Model.Search"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">All</a>
+                            </li>
+                            @foreach (var item in Model.Brands)
+                            {
+                                <li>
+                                    <a class="text-decoration-none @(Model.Brand == item.Id ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                               asp-route-brand="@item.Id" asp-route-category="@Model.Category" asp-route-search="@Model.Search"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">@item.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+                <li class="pb-3">
+                    <a class="d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Size
+                        <i class="pull-right fa fa-fw fa-chevron-circle-up mt-1"></i>
+                    </a>
+                    @if (Model.Sizes.Count() > 0)
+                    {
+                        <div class="active">
+                            <a class="text-decoration-none pl-3 @(Model.SizeId == 0 ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                           asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-search="@Model.Search"
+                           asp-route-sizeid="0" asp-route-orderby="@Model.OrderBy">All size</a>
+                            <div class="row pl-3">
+                                @foreach (var item in Model.Sizes)
+                                {
+                                    <div class="col-4">
+                                        <a class="text-decoration-none @(Model.SizeId == item.Id ? "font-weight-bold" : "")" asp-action="Index" asp-controller="Product"
+                                   asp-route-brand="@Model.Brand" asp-route-category="@Model.Category" asp-route-search="@Model.Search"
+                                   asp-route-sizeid="@item.Id" asp-route-orderby="@Model.OrderBy">@item.Name</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-lg-9">
+            <form id="form-select-sort" asp-controller="Product" asp-action="Index" method="GET">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <select class="form-control" asp-for="OrderBy" onchange="selectChangeHandler()">
+                                <option value="0">Newest</option>
+                                <option value="1">Oldest</option>
+                                <option value="2">Price: High-Low</option>
+                                <option value="3">Price: Low-High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="hidden" asp-for="Brand" value="@Model.Brand" />
+                            <input type="hidden" asp-for="Category" value="@Model.Category" />
+                            <input type="hidden" asp-for="SizeId" value="@Model.SizeId" />
+                            <input type="text" class="form-control" value="@Model.Search" asp-for="Search" placeholder="Search by Name">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            @if (Model.TotalCount == 0)
+            {
+                <div class="my-5">
+                    <h3 class="text-center">No products to be shown</h3>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var item in Model.ProductsPaginated)
+                    {
+                        <div class="col-md-4">
+                            <div class="card mb-4 product-wap rounded-0">
+                                <div class="card rounded-0" style="height: 18em;">
+                                    <img class="card-img rounded-0 img-fluid h-100" src="@item.Image">
+
+                                    <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                        <ul class="list-unstyled">
+                                            <li><a class="btn btn-success text-white mt-2" asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="">
+                                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="h3 text-decoration-none"
+                               style="height:2.5em; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">@item.Name</a>
+                                    <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
+                                        <li>@item.Brand.Name</li>
+                                    </ul>
+                                    <p class="text-center mb-0">$@item.Price</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- Pagination -->
+                <div div="row">
+                    @if (Model.TotalPage > 1)
+                    {
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-lg justify-content-end">
+                                <li class="page-item prev" class="@(@Model.Page == 1 ? "disabled" : "")">
+                                    <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == 1 ? "active" : "bg-light")"
+                               asp-action="Index" asp-controller="Product" asp-route-page="1" asp-route-search="@Model.Search"
+                               asp-route-category="@Model.Category" asp-route-brand="@Model.Brand"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">First</a>
+                                </li>
+
+                                @foreach (var Page in Model.PageNumbers)
+                                {
+                                    <li class="page-item" class="@(@Model.Page == Page ? "disabled" : "")">
+                                        <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == Page ? "active" : "bg-light")"
+                               asp-action="Index" asp-controller="Product" asp-route-page="@Page" asp-route-search="@Model.Search"
+                               asp-route-category="@Model.Category" asp-route-brand="@Model.Brand"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">@Page</a>
+                                    </li>
+                                }
+
+                                <li class="page-item next" class="@(@Model.Page == Model.TotalPage ? "disabled" : "")">
+                                    <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == Model.TotalPage ? "active" : "bg-light")"
+                               asp-action="Index" asp-controller="Product" asp-route-page="@Model.TotalPage" asp-route-search="@Model.Search"
+                               asp-route-category="@Model.Category" asp-route-brand="@Model.Brand"
+                               asp-route-sizeid="@Model.SizeId" asp-route-orderby="@Model.OrderBy">Last</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- End Content -->
+@section Scripts {
+    <script>
+        function selectChangeHandler() {
+            document.getElementById("form-select-sort").submit();
+        }
+    </script>
+}

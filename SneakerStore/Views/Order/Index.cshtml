@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "My Orders";
+}
+@model OrderListClientViewModel
+
+<section class="h-100">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header pb-0 d-flex justify-content-between">
+                        <h5 class="my-4">My Orders</h5>
+                        <!-- Status select -->
+                        <form class="mb-3" id="select-form" method="get" asp-action="Index" asp-controller="Order">
+                            <input type="hidden" asp-for="Page" value="1" />
+                            <label class="form-label mb-0" for="selectList">Status</label>
+                            <select class="form-control" id="selectList" asp-for="Status" style="width:12em;" onchange="selectChangeHandler()">
+                                <option value="" disabled>Choose your option</option>
+                                <option value="0">All</option>
+                                <option value="1">Pending</option>
+                                <option value="2">Processing</option>
+                                <option value="3">Rejected</option>
+                                <option value="4">Completed</option>
+                                <option value="5">Cancelled</option>
+                            </select>
+                        </form>
+                    </div>
+
+                    @if (Model.OrdersPaginated.Count() == 0)
+                    {
+                        <div class="d-flex align-items-center" style="height: 10em;">
+                            <h5 class="text-center m-auto">No orders to be found</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-body px-0 pt-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder">Order ID</th>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder">Order Date</th>
+                                            <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder">Status</th>
+                                            <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder">Total Price</th>
+                                            <th class="text-secondary opacity-7"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrdersPaginated)
+                                        {
+                                            string status = "Pending";
+                                            string statusColor = "bg-warning";
+                                            switch (item.Status)
+                                            {
+                                                case 1:
+                                                    status = "Pending";
+                                                    statusColor = "bg-warning";
+                                                    break;
+                                                case 2:
+                                                    status = "Processing";
+                                                    statusColor = "bg-info";
+                                                    break;
+                                                case 3:
+                                                    status = "Rejected";
+                                                    statusColor = "bg-danger";
+                                                    break;
+                                                case 4:
+                                                    status = "Completed";
+                                                    statusColor = "bg-success";
+                                                    break;
+                                                case 5:
+                                                    status = "Cancelled";
+                                                    statusColor = "bg-danger";
+                                                    break;
+                                            }
+                                            <tr>
+                                                <td>
+                                                    <a asp-controller="Order" asp-action="Detail" asp-route-id="@item.Id" class="text-dark text-xs font-weight-bold mb-0">Order #@item.Id</a>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs mb-0">@item.CreatedAt.Value.ToString("MMMM dd, yyyy")</p>
+                                                </td>
+                                                <td class="text-center text-sm">
+                                                    <p class="mx-auto py-1 font-weight-bold w-50 fs-6 text-center rounded-2 text-white @statusColor">@status</p>
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    <p class="text-xs mb-0">$@item.TotalPrice.ToString("#,##0.00")</p>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <a asp-controller="Order" asp-action="Detail" asp-route-id="@item.Id" class="text-secondary font-weight-bold text-xs">
+                                                        View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div div="row">
+                            @if (Model.TotalPage > 1)
+                            {
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-lg justify-content-end">
+                                        <li class="page-item prev" class="@(@Model.Page == 1 ? "disabled" : "")">
+                                            <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == 1 ? "active" : "bg-light")"
+                                       asp-action="Index" asp-controller="Order" asp-route-page="1" asp-route-status="@Model.Status">First</a>
+                                        </li>
+
+                                        @foreach (var Page in Model.PageNumbers)
+                                        {
+                                            <li class="page-item" class="@(@Model.Page == Page ? "disabled" : "")">
+                                                <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == Page ? "active" : "bg-light")"
+                                       asp-action="Index" asp-controller="Order" asp-route-page="@Page" asp-route-status="@Model.Status">@Page</a>
+                                            </li>
+                                        }
+
+                                        <li class="page-item next" class="@(@Model.Page == Model.TotalPage ? "disabled" : "")">
+                                            <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 @(@Model.Page == Model.TotalPage ? "active" : "bg-light")"
+                                       asp-action="Index" asp-controller="Order" asp-route-page="@Model.TotalPage" asp-route-status="@Model.Status">Last</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function selectChangeHandler() {
+            document.getElementById("select-form").submit();
+        }
+    </script>
+}
